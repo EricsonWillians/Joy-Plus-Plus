@@ -16,8 +16,7 @@ unsigned int get_random_int(unsigned int min, unsigned int max) {
     const unsigned int buckets = RAND_MAX / range;
     const unsigned int limit = buckets * range;
 
-    do
-    {
+    do {
         r = rand();
     } while (r >= limit);
 
