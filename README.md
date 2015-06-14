@@ -12,4 +12,4 @@ A top-view 2D shooter.
 
 #### How to play it:
 
-Just download the release folder and execute it on Windows (It's a x86 windows binary, should run normally). "Ah, but I'm on linux!" (Then you're probably a "hacker" already and in that case, just install the Allegro 5 library and compile the whole schmere).
+Just download the release folder and execute it on Windows (It's a x86 windows binary, should run normally). "Ah, but I'm on linux!" (Then you're probably a "hacker" already and in that case, just install the Allegro 5 library and compile the whole schmere with your own make file).
