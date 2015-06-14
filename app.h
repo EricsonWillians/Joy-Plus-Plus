@@ -21,14 +21,18 @@ public:
     ALLEGRO_TIMER *timer;
     ALLEGRO_EVENT e;
     bool running;
+    const char *window_title;
     int screen_width;
     int screen_height;
     float FPS;
 
-    App(int screen_width, int screen_height, float FPS = 30);
+    App(int screen_width, int screen_height, const char *window_title = "Joy++ Application", float FPS = 30);
     int init_all();
     void register_all();
+    void run();
     void destroy_all();
+
+    void set_background_color(int r, int g, int b);
     unsigned int get_random_int(unsigned int min, unsigned int max);
 };
 
