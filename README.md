@@ -5,7 +5,7 @@ A top-view 2D shooter.
 
 * Controllable player (Arrow keys and WASD (LSHIFT for "turbo")).
 * 4 aim directions (UP, DOWN, LEFT and RIGHT).
-* Cartridge-based bulllet and fire system.
+* Cartridge-based bulllet and fire system (Space to fire).
 * Random enemy spawn and respawn.
 * Bullet and actor collision detection.
 * Scene management.
