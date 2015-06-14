@@ -1,5 +1,5 @@
 # Car-Mayhem
-A Top-View 2D shooter.
+A top-view 2D shooter.
 
 #### Present features:
 
