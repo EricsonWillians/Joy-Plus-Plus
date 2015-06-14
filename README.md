@@ -3,7 +3,7 @@ A top-view 2D shooter.
 
 #### Present features:
 
-* Controllable player with the arrow keys and WASD.
+* Controllable player (Arrow keys and WASD).
 * 4 aim directions (UP, DOWN, LEFT and RIGHT).
 * Cartridge-based bulllet and fire system.
 * Random enemy spawn and respawn.
