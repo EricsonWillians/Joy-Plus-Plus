@@ -1,7 +1,5 @@
 #include "app.h"
 
-
-
 App::App(int screen_width, int screen_height, const char *window_title, float FPS)
 {
     this->window_title = window_title;
