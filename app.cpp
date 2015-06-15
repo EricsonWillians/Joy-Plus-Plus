@@ -53,15 +53,15 @@ int App::init_all()
         return -1;
     }
 
-    App::display = al_create_display(this->screen_width, this->screen_height);
+    this->display = al_create_display(this->screen_width, this->screen_height);
 
-    if (!App::display)
+    if (!this->display)
     {
         cout << "Failed to create the display." << endl;
         return -1;
     }
 
-    al_set_window_title(App::display, this->window_title);
+    al_set_window_title(this->display, this->window_title);
 
     if (!al_install_keyboard())
     {
@@ -69,16 +69,16 @@ int App::init_all()
         return -1;
     }
 
-    App::event_queue = al_create_event_queue();
+    this->event_queue = al_create_event_queue();
 
-    if (!App::event_queue)
+    if (!this->event_queue)
     {
         cout << "Failed to create the event queue." << endl;
-        al_destroy_display(App::display);
+        al_destroy_display(this->display);
         return -1;
     }
 
-    App::timer = al_create_timer(0.30 / App::FPS);
+    this->timer = al_create_timer(0.30 / this->FPS);
     al_clear_to_color(al_map_rgb(0,0,0));
     al_flip_display();
 
@@ -87,10 +87,10 @@ int App::init_all()
 
 void App::register_all()
 {
-    al_register_event_source(App::event_queue, al_get_display_event_source(App::display));
-    al_register_event_source(App::event_queue, al_get_timer_event_source(App::timer));
-    al_start_timer(App::timer);
-    al_register_event_source(App::event_queue, al_get_keyboard_event_source());
+    al_register_event_source(this->event_queue, al_get_display_event_source(this->display));
+    al_register_event_source(this->event_queue, al_get_timer_event_source(this->timer));
+    al_start_timer(this->timer);
+    al_register_event_source(this->event_queue, al_get_keyboard_event_source());
 }
 
 void App::run()

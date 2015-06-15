@@ -66,7 +66,6 @@ public:
     act scenes;
     act event_scenes;
 
-
     App(int screen_width, int screen_height, const char *window_title = "Joy++ Application", float FPS = 30);
     int init_all();
     void register_all();
