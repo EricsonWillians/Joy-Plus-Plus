@@ -30,7 +30,8 @@ using namespace std;
 #include <allegro5/allegro_native_dialog.h>
 #include <allegro5/allegro_image.h>
 
-typedef const char path;
+typedef const char *path;
+typedef ALLEGRO_BITMAP *img;
 typedef void(*plot)();
 typedef map<string, plot> act;
 
@@ -40,15 +41,12 @@ private:
     string name;
     plot p;
 public:
-    Scene(string name, plot p)
-    {
-        this->name = name;
-        this->p = p;
-    }
-    string get_name() { return this->name; }
-    plot get_plot() { return this->p; }
-    void set_name(string value) { this->name = value; }
-    void set_plot(plot value) { this->p = value; }
+    Scene(string name, plot p);
+    ~Scene() {};
+    string get_name();
+    plot get_plot();
+    void set_name(string value);
+    void set_plot(plot value);
 };
 
 class App
@@ -67,6 +65,7 @@ public:
     act event_scenes;
 
     App(int screen_width, int screen_height, const char *window_title = "Joy++ Application", float FPS = 30);
+    ~App() {};
     int init_all();
     void register_all();
     void run();

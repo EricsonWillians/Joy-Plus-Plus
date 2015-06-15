@@ -19,12 +19,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "app.h"
 
+Scene::Scene(string scene_name, plot _plot)
+{
+    name = scene_name;
+    p = _plot;
+}
+
+string Scene::get_name(void) { return name; }
+plot Scene::get_plot(void) { return p; }
+void Scene::set_name(string scene_name) { name = scene_name; }
+void Scene::set_plot(plot _plot) { p = _plot; }
+
 App::App(int screen_width, int screen_height, const char *window_title, float FPS)
 {
     this->window_title = window_title;
     this->screen_width = screen_width;
     this->screen_height = screen_height;
     this->FPS = FPS;
+    this->init_all();
+    this->register_all();
 }
 
 ALLEGRO_DISPLAY *App::display = nullptr;
@@ -95,9 +108,6 @@ void App::register_all()
 
 void App::run()
 {
-    this->init_all();
-    this->register_all();
-
     while (App::running)
     {
         // Run the plots.

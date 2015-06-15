@@ -22,6 +22,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "app.h"
 
+class Object
+{
+public:
+    Object(void) {};
+    ~Object(void) {};
+};
 
+class Image: public Object
+{
+private:
+    path full_path;
+    img image;
+    int x;
+    int y;
+public:
+    Image(path p, int x_pos = 0, int y_pos = 0);
+    ~Image() {};
+    path get_path();
+    void set_path(path p);
+    img get_image();
+    void set_image(img _image);
+    int get_x();
+    void set_x(int value);
+    int get_y();
+    void set_y(int value);
+    void draw(int flags = 0);
+};
 
 #endif // OBJECTS_H_INCLUDED
