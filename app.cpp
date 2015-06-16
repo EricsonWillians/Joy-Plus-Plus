@@ -32,15 +32,21 @@ void Scene::set_plot(plot _plot) { p = _plot; }
 
 App::App(int screen_width, int screen_height, const char *window_title, float FPS)
 {
+    // Initializing non-static members.
+
     this->window_title = window_title;
     this->screen_width = screen_width;
     this->screen_height = screen_height;
     this->FPS = FPS;
+    this->background_color = al_map_rgb(0, 0, 0);
+
+    // Starting Allegro
+
     this->init_all();
     this->register_all();
 }
 
-// Static declarations.
+// Initializing static members.
 
 ALLEGRO_DISPLAY *App::display = nullptr;
 ALLEGRO_EVENT_QUEUE *App::event_queue = nullptr;
@@ -139,7 +145,7 @@ void App::run()
                 }
             }
             al_flip_display();
-            al_clear_to_color(al_map_rgb(0, 0, 0));
+            al_clear_to_color(background_color);
         }
     }
     this->destroy_all();
@@ -176,6 +182,11 @@ void App::add_event_scene(Scene scene)
 void App::add_visual_scene(Scene scene)
 {
     this->visual_scenes[scene.get_name()] = scene.get_plot();
+}
+
+void App::set_background_color(int r, int g, int b)
+{
+    this->background_color = al_map_rgb(r, g, b);
 }
 
 unsigned int App::get_random_int(unsigned int min, unsigned int max)

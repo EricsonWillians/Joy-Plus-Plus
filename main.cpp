@@ -42,17 +42,16 @@ void event_plot()
     }
 }
 
-
-
 void visual_plot()
 {
-    Image x("sample.png");
+    static Image x("sample.png");
     x.draw();
 }
 
 int main(int argc, char **argv)
 {
     App app(800, 600);
+    app.set_background_color(200, 0, 0);
     app.add_event_scene(Scene("Event Plot", event_plot));
     app.add_visual_scene(Scene("Visual Plot", visual_plot));
     app.run();

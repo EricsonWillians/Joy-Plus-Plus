@@ -67,6 +67,8 @@ public:
     act visual_scenes;
     static img_map images;
 
+    ALLEGRO_COLOR background_color;
+
     App(int screen_width, int screen_height, const char *window_title = "Joy++ Application", float FPS = 30);
     ~App() {};
     int init_all();
@@ -77,10 +79,12 @@ public:
     static ALLEGRO_EVENT event();
     static ALLEGRO_EVENT_TYPE event_type();
     static void shut_down();
+
     void add_event_scene(Scene scene);
     void add_visual_scene(Scene scene);
     void remove_event_scene(Scene scene);
     void remove_visual_scene(Scene scene);
+
     void set_background_color(int r, int g, int b);
     unsigned int get_random_int(unsigned int min, unsigned int max);
 };
