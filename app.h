@@ -32,6 +32,7 @@ using namespace std;
 
 typedef const char *path;
 typedef ALLEGRO_BITMAP *img;
+typedef map<path, img> img_map;
 typedef void(*plot)();
 typedef map<string, plot> act;
 
@@ -57,12 +58,14 @@ public:
     static ALLEGRO_TIMER *timer;
     static ALLEGRO_EVENT e;
     static bool running;
+    static bool redraw;
     const char *window_title;
     int screen_width;
     int screen_height;
     float FPS;
-    act scenes;
     act event_scenes;
+    act visual_scenes;
+    static img_map images;
 
     App(int screen_width, int screen_height, const char *window_title = "Joy++ Application", float FPS = 30);
     ~App() {};
@@ -71,8 +74,13 @@ public:
     void run();
     void destroy_all();
 
-    void add_scene(Scene scene);
-    void remove_scene(Scene scene);
+    static ALLEGRO_EVENT event();
+    static ALLEGRO_EVENT_TYPE event_type();
+    static void shut_down();
+    void add_event_scene(Scene scene);
+    void add_visual_scene(Scene scene);
+    void remove_event_scene(Scene scene);
+    void remove_visual_scene(Scene scene);
     void set_background_color(int r, int g, int b);
     unsigned int get_random_int(unsigned int min, unsigned int max);
 };

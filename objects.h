@@ -33,7 +33,6 @@ class Image: public Object
 {
 private:
     path full_path;
-    img image;
     int x;
     int y;
 public:

@@ -40,11 +40,15 @@ App::App(int screen_width, int screen_height, const char *window_title, float FP
     this->register_all();
 }
 
+// Static declarations.
+
 ALLEGRO_DISPLAY *App::display = nullptr;
 ALLEGRO_EVENT_QUEUE *App::event_queue = nullptr;
 ALLEGRO_TIMER *App::timer = nullptr;
 ALLEGRO_EVENT App::e;
 bool App::running = true;
+bool App::redraw = true;
+img_map App::images;
 
 int App::init_all()
 {
@@ -108,35 +112,70 @@ void App::register_all()
 
 void App::run()
 {
-    while (App::running)
+    while (this->running)
     {
-        // Run the plots.
-
-        if (!this->scenes.empty())
+        this->redraw = false;
+        while (!al_is_event_queue_empty(this->event_queue))
         {
-            for (auto const &it : this->scenes)
+            al_wait_for_event(this->event_queue, &this->e);
+            if (this->e.type == ALLEGRO_EVENT_TIMER)
             {
-                it.second();
+                this->redraw = true;
+            } else if (!this->event_scenes.empty())
+            {
+                for (auto const &it : this->event_scenes)
+                {
+                    it.second();
+                }
             }
         }
+        if (this->redraw)
+        {
+            if (!this->visual_scenes.empty())
+            {
+                for (auto const &it : this->visual_scenes)
+                {
+                    it.second();
+                }
+            }
+            al_flip_display();
+            al_clear_to_color(al_map_rgb(0, 0, 0));
+        }
     }
-
     this->destroy_all();
 }
 
 void App::destroy_all()
 {
     al_destroy_display(this->display);
-    /*
-    al_destroy_bitmap(player.bitmaps["UP"]);
-    al_destroy_bitmap(player.bitmaps["LEFT"]);
-    */
+    for (auto const &it : this->images)
+    {
+        al_destroy_bitmap(it.second);
+    }
     al_destroy_event_queue(this->event_queue);
 }
 
-void App::add_scene(Scene scene)
+ALLEGRO_EVENT App::event() {
+    return App::e;
+}
+
+ALLEGRO_EVENT_TYPE App::event_type() {
+    return App::e.type;
+}
+
+void App::shut_down()
 {
-    this->scenes[scene.get_name()] = scene.get_plot();
+    App::running = false;
+}
+
+void App::add_event_scene(Scene scene)
+{
+    this->event_scenes[scene.get_name()] = scene.get_plot();
+}
+
+void App::add_visual_scene(Scene scene)
+{
+    this->visual_scenes[scene.get_name()] = scene.get_plot();
 }
 
 unsigned int App::get_random_int(unsigned int min, unsigned int max)

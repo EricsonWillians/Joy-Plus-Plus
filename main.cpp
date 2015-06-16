@@ -23,48 +23,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Example of external "plot" (Procedure),
 // that's going to run inside Allegro's main-loop.
 
-void flow_plot()
+void event_plot()
 {
-    Image x("sample.png");
-
-    bool redraw = false;
-    while (!al_is_event_queue_empty(App::event_queue))
+    if (App::event_type() == ALLEGRO_EVENT_DISPLAY_CLOSE)
     {
-
-        al_wait_for_event(App::event_queue, &App::e);
-
-        if (App::e.type == ALLEGRO_EVENT_TIMER)
+        App::shut_down();
+    }
+    if (App::event_type() == ALLEGRO_EVENT_KEY_DOWN)
+    {
+        if (App::event().keyboard.keycode == ALLEGRO_KEY_ESCAPE)
         {
-            redraw = true;
-        } else if (App::e.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+            App::shut_down();
+        }
+        if (App::event().keyboard.keycode == ALLEGRO_KEY_ENTER)
         {
-            App::running = false;
-        } else if (App::e.type == ALLEGRO_EVENT_KEY_DOWN)
-        {
-            if (App::e.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
-            {
-                App::running = false;
-            }
-            if (App::e.keyboard.keycode == ALLEGRO_KEY_ENTER)
-            {
-                cout << "It works!";
-            }
+            cout << "Bloody hell! This shit actually works! ";
         }
     }
-    if (redraw)
-    {
-        x.draw();
-        al_flip_display();
-        al_clear_to_color(al_map_rgb(0, 0, 0));
+}
 
-    }
+
+
+void visual_plot()
+{
+    Image x("sample.png");
+    x.draw();
 }
 
 int main(int argc, char **argv)
 {
-
     App app(800, 600);
-    app.add_scene(Scene("Flow Plot", flow_plot));
+    app.add_event_scene(Scene("Event Plot", event_plot));
+    app.add_visual_scene(Scene("Visual Plot", visual_plot));
     app.run();
     return 0;
 }
+

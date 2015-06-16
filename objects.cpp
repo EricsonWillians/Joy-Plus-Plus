@@ -24,7 +24,7 @@ Image::Image(path p, int x_pos, int y_pos)
     x = x_pos;
     y = y_pos;
     full_path = p;
-    image = al_load_bitmap(full_path);
+    img image = al_load_bitmap(full_path);
     if (!image)
     {
         al_show_native_message_box(App::display,
@@ -35,14 +35,15 @@ Image::Image(path p, int x_pos, int y_pos)
             ALLEGRO_MESSAGEBOX_ERROR);
         al_destroy_display(App::display);
     }
+    App::images[p] = image;
 }
 
 path Image::get_path() { return full_path; }
 void Image::set_path(path p) { full_path = p; }
-img Image::get_image() { return image; }
-void Image::set_image(img _image) { image = _image; }
+img Image::get_image() { return App::images[full_path]; }
+void Image::set_image(img _image) { App::images[full_path] = _image; }
 int Image::get_x() { return x; }
 void Image::set_x(int value) { x = value; }
 int Image::get_y() { return y; }
 void Image::set_y(int value) { y = value; }
-void Image::draw(int flags) { al_draw_bitmap(image, x, y, flags); }
+void Image::draw(int flags) { al_draw_bitmap(App::images[full_path], x, y, flags); }
