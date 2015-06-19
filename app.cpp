@@ -17,7 +17,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include "app.h"
+#include "joypp_app.h"
+
+Object::Object()
+{
+    App::object_counter += 1;
+    this->id = App::object_counter;
+}
+
+long int Object::get_id()
+{
+    return this->id;
+}
 
 Scene::Scene(string scene_name, plot _plot)
 {
@@ -44,6 +55,14 @@ App::App(int screen_width, int screen_height, const char *window_title, float FP
 
     this->init_all();
     this->register_all();
+    this->init_key_states();
+
+    // I'm developing on Windows 7, and MinGW does not handle
+    // the new fancy alternative for randomness of C++11 properly.
+    // So don't blame my oldschool approach, you Unix user.
+
+    srand(time(nullptr));
+
 }
 
 // Initializing static members.
@@ -54,15 +73,12 @@ ALLEGRO_TIMER *App::timer = nullptr;
 ALLEGRO_EVENT App::e;
 bool App::running = true;
 bool App::redraw = true;
-img_map App::images;
+key_map App::key_states;
+obj_map App::objects;
+long int App::object_counter = 0;
 
 int App::init_all()
 {
-    // I'm developing on Windows 7, and MinGW does not handle
-    // the new fancy alternative for randomness of C++11 properly.
-    // So don't blame my oldschool approach, you Unix user.
-
-    srand(time(nullptr));
 
     if (!al_init())
     {
@@ -116,6 +132,49 @@ void App::register_all()
     al_register_event_source(this->event_queue, al_get_keyboard_event_source());
 }
 
+void App::check_key_states()
+{
+    if (this->e.type == ALLEGRO_EVENT_KEY_DOWN)
+    {
+        this->set_key_state(ALLEGRO_KEY_UP, "UP", true);
+        this->set_key_state(ALLEGRO_KEY_DOWN, "DOWN", true);
+        this->set_key_state(ALLEGRO_KEY_LEFT, "LEFT", true);
+        this->set_key_state(ALLEGRO_KEY_RIGHT, "RIGHT", true);
+        this->set_key_state(ALLEGRO_KEY_W, "W", true);
+        this->set_key_state(ALLEGRO_KEY_S, "S", true);
+        this->set_key_state(ALLEGRO_KEY_A, "A", true);
+        this->set_key_state(ALLEGRO_KEY_D, "D", true);
+        this->set_key_state(ALLEGRO_KEY_LSHIFT, "LSHIFT", true);
+        this->set_key_state(ALLEGRO_KEY_SPACE, "SPACE", true);
+    } else if (this->e.type == ALLEGRO_EVENT_KEY_UP)
+    {
+        this->set_key_state(ALLEGRO_KEY_UP, "UP", false);
+        this->set_key_state(ALLEGRO_KEY_DOWN, "DOWN", false);
+        this->set_key_state(ALLEGRO_KEY_LEFT, "LEFT", false);
+        this->set_key_state(ALLEGRO_KEY_RIGHT, "RIGHT", false);
+        this->set_key_state(ALLEGRO_KEY_W, "W", false);
+        this->set_key_state(ALLEGRO_KEY_S, "S", false);
+        this->set_key_state(ALLEGRO_KEY_A, "A", false);
+        this->set_key_state(ALLEGRO_KEY_D, "D", false);
+        this->set_key_state(ALLEGRO_KEY_LSHIFT, "LSHIFT", false);
+        this->set_key_state(ALLEGRO_KEY_SPACE, "SPACE", false);
+    }
+}
+
+void App::init_key_states()
+{
+    key_states["UP"] = false;
+    key_states["DOWN"] = false;
+    key_states["LEFT"] = false;
+    key_states["RIGHT"] = false;
+    key_states["W"] = false;
+    key_states["S"] = false;
+    key_states["A"] = false;
+    key_states["D"] = false;
+    key_states["LSHIFT"] = false;
+    key_states["SPACE"] = false;
+}
+
 void App::run()
 {
     while (this->running)
@@ -129,6 +188,7 @@ void App::run()
                 this->redraw = true;
             } else if (!this->event_scenes.empty())
             {
+                this->check_key_states();
                 for (auto const &it : this->event_scenes)
                 {
                     it.second();
@@ -153,11 +213,8 @@ void App::run()
 
 void App::destroy_all()
 {
+    // Must find a way to destroy the images.
     al_destroy_display(this->display);
-    for (auto const &it : this->images)
-    {
-        al_destroy_bitmap(it.second);
-    }
     al_destroy_event_queue(this->event_queue);
 }
 
@@ -184,14 +241,14 @@ void App::add_visual_scene(Scene scene)
     this->visual_scenes[scene.get_name()] = scene.get_plot();
 }
 
-void App::set_background_color(int r, int g, int b)
+long int App::get_object_count()
 {
-    this->background_color = al_map_rgb(r, g, b);
+    return this->object_counter;
 }
 
 unsigned int App::get_random_int(unsigned int min, unsigned int max)
 {
-    int r;
+    int r; //
     const unsigned int range = 1 + max - min;
     const unsigned int buckets = RAND_MAX / range;
     const unsigned int limit = buckets * range;
@@ -202,4 +259,23 @@ unsigned int App::get_random_int(unsigned int min, unsigned int max)
     } while (r >= limit);
 
     return min + (r / buckets);
+}
+
+void App::set_key_state(int al_key, string key_name, bool state)
+{
+    for (auto it = key_states.begin(); it != key_states.end(); ++it)
+    {
+        if (this->e.keyboard.keycode == al_key)
+        {
+            if (it->first == key_name)
+            {
+                it->second = state;
+            }
+        }
+    }
+}
+
+void App::set_background_color(int r, int g, int b)
+{
+    this->background_color = al_map_rgb(r, g, b);
 }
