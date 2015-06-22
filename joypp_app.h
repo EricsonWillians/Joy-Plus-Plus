@@ -25,8 +25,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define APP_H_INCLUDED
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <map>
+#include <memory>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_native_dialog.h>
 #include <allegro5/allegro_image.h>
@@ -77,11 +79,11 @@ protected:
     long int id;
 public:
     Object(void);
-    ~Object(void) {};
+    virtual ~Object(void) {};
     long int get_id(void);
 };
 
-typedef map<long int, Object*> obj_map;
+typedef map<string, Object*> obj_map;
 
 class Scene
 {
@@ -137,6 +139,8 @@ public:
     static ALLEGRO_EVENT event();
     static ALLEGRO_EVENT_TYPE event_type();
     static void shut_down();
+    template <typename T>
+    static T get_object(string id);
 
     App(int screen_width, int screen_height, const char *window_title = "Joy++ Application", float FPS = 30);
     ~App(void) {};
@@ -157,5 +161,20 @@ public:
     void set_key_state(int al_key, string key_name, bool state);
     void set_background_color(int r, int g, int b);
 };
+
+// Implementation Exception.
+
+template<typename ValueType>
+std::string stringulate(ValueType v)
+{
+/*
+to_string does not work on MinGW 32 for windows (Even with the official GCC patch.
+So, I thank GALIK for this awesome solution (And the brilliant function name).
+http://stackoverflow.com/users/3807729/galik
+*/
+    std::ostringstream oss;
+    oss << v;
+    return oss.str();
+}
 
 #endif // APP_H_INCLUDED

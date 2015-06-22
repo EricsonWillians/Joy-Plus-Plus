@@ -44,9 +44,11 @@ Be sure to follow it!
 
 */
 
-Image::Image(path p, int x_pos, int y_pos) : Object()
+Image::Image(path p, int x_pos, int y_pos)
 {
-    App::objects[this->id] = this;
+  //  App::objects[to_string(this->id)] = this;
+  //
+    App::objects[stringulate(this->id)] = this;
     this->x = x_pos;
     this->y = y_pos;
     this->full_path = p;

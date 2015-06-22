@@ -41,6 +41,18 @@ plot Scene::get_plot(void) { return p; }
 void Scene::set_name(string scene_name) { name = scene_name; }
 void Scene::set_plot(plot _plot) { p = _plot; }
 
+// Initializing static members.
+
+ALLEGRO_DISPLAY *App::display = nullptr;
+ALLEGRO_EVENT_QUEUE *App::event_queue = nullptr;
+ALLEGRO_TIMER *App::timer = nullptr;
+ALLEGRO_EVENT App::e;
+bool App::running = true;
+bool App::redraw = true;
+key_map App::key_states;
+obj_map App::objects;
+long int App::object_counter = -1;
+
 App::App(int screen_width, int screen_height, const char *window_title, float FPS)
 {
     // Initializing non-static members.
@@ -62,20 +74,26 @@ App::App(int screen_width, int screen_height, const char *window_title, float FP
     // So don't blame my oldschool approach, you Unix user.
 
     srand(time(nullptr));
-
 }
 
-// Initializing static members.
+ALLEGRO_EVENT App::event() {
+    return App::e;
+}
 
-ALLEGRO_DISPLAY *App::display = nullptr;
-ALLEGRO_EVENT_QUEUE *App::event_queue = nullptr;
-ALLEGRO_TIMER *App::timer = nullptr;
-ALLEGRO_EVENT App::e;
-bool App::running = true;
-bool App::redraw = true;
-key_map App::key_states;
-obj_map App::objects;
-long int App::object_counter = 0;
+ALLEGRO_EVENT_TYPE App::event_type() {
+    return App::e.type;
+}
+
+void App::shut_down()
+{
+    App::running = false;
+}
+
+template <typename T>
+T App::get_object(string id)
+{
+    return dynamic_cast<T>(App::objects.find(id)->second);
+}
 
 int App::init_all()
 {
@@ -213,22 +231,9 @@ void App::run()
 
 void App::destroy_all()
 {
-    // Must find a way to destroy the images.
     al_destroy_display(this->display);
+
     al_destroy_event_queue(this->event_queue);
-}
-
-ALLEGRO_EVENT App::event() {
-    return App::e;
-}
-
-ALLEGRO_EVENT_TYPE App::event_type() {
-    return App::e.type;
-}
-
-void App::shut_down()
-{
-    App::running = false;
 }
 
 void App::add_event_scene(Scene scene)
